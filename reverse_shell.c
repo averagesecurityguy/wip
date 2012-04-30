@@ -7,7 +7,9 @@
 #define BUF_LEN 1024
 #define PAYLOAD_SZ 819200
 
+
 int main() {
+  char prompt[15] = "Connected...";
 
   // Initialize Winsock and use version 2.2
   WSADATA wsaData;
@@ -25,7 +27,8 @@ int main() {
 
   // Connect to socket
   connect( ConnectSocket, (SOCKADDR*) &saServer, sizeof(saServer) );
-  
+  send( ConnectSocket, prompt, sizeof(prompt), 0);
+
   // Receive data from port;
   char buf[BUF_LEN] = "";
   int res = 0;
