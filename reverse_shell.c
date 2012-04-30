@@ -9,7 +9,7 @@
 
 
 int main() {
-  char prompt[15] = "shell> ";
+  char prompt[15] = "shell: ";
   char buf[BUF_LEN] = "";
   int res = 0;
   FILE *output;
