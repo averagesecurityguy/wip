@@ -9,7 +9,7 @@
 
 
 int main() {
-  char prompt[15] = "Connected...\n";
+  char prompt[15] = "Connected...";
 
   // Initialize Winsock and use version 2.2
   WSADATA wsaData;
