@@ -1,9 +1,8 @@
 import subprocess
 import socket
 import sys
-import argparse
 
-host = '10.230.229.27'
+host = '192.168.11.82'
 port = 4445
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
